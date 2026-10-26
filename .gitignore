@@ -14,6 +14,12 @@
 
 # Output files from R CMD build
 /*.tar.gz
+.local/
+
+# Local credentials
+.env
+.env.*
+!.env.example
 
 # Output files from R CMD check
 /*.Rcheck/

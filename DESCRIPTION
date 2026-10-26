@@ -1,0 +1,19 @@
+Package: weightxrepsR
+Title: Query the WeightXReps GraphQL API
+Version: 0.1.0
+Authors@R:
+    person("Jim", "Rutherford", role = c("aut", "cre"),
+           email = "jimr1603@gmail.com")
+Author: Jim Rutherford [aut, cre]
+Maintainer: Jim Rutherford <jimr1603@gmail.com>
+Description: A focused R client for querying the public WeightXReps
+    GraphQL API.
+License: GPL-3 + file LICENSE
+Encoding: UTF-8
+RoxygenNote: 7.3.3
+Imports:
+    httr2,
+    jsonlite
+Suggests:
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

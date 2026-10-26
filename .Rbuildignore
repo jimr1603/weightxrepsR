@@ -1,0 +1,5 @@
+^\.git$
+^\.local$
+^\.gitignore$
+^\.env$
+^\.env\.
