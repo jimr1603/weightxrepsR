@@ -110,3 +110,61 @@ test_that("training log downloads can be written to JSON", {
 test_that("training log JSON output rejects invalid paths", {
   expect_error(weightxreps_write_logs(list(), NULL), "path", fixed = TRUE)
 })
+
+test_that("training log lists are converted to tibbles", {
+  logs <- weightxreps_tibble_logs(list(
+    did = list(
+      list("__typename" = "JEditorDayTag", on = "2026-01-02"),
+      list("__typename" = "JEditorEBlock", e = 17L,
+           sets = list(list(v = 100, r = 5), list(v = 102.5, r = 5)))
+    ),
+    exercises = list(list(e = list(id = "17", name = "Squat", type = 1),
+                          days = 8L, reps = 40L)),
+    etags = list("Strength"),
+    utags = list(list(id = "3", name = "Gym", automatic = FALSE)),
+    baseBW = 80
+  ))
+
+  expect_s3_class(logs$did, "tbl_df")
+  expect_s3_class(logs$exercises, "tbl_df")
+  expect_s3_class(logs$utags, "tbl_df")
+  expect_s3_class(logs$exercises$e[[1]], "tbl_df")
+  expect_s3_class(logs$did$sets[[2]], "tbl_df")
+  expect_equal(logs$did$on[[1]], "2026-01-02")
+  expect_equal(logs$etags, list("Strength"))
+})
+
+test_that("single-day workout query uses the session uid and date variables", {
+  request <- weightxreps_request(
+    query = WEIGHTXREPS_JDAY_QUERY,
+    variables = list(uid = "6889", ymd = "2026-10-20"),
+    token = "example-token"
+  )
+
+  expect_match(request$body$data$query, "jday(uid: $uid, ymd: $ymd)", fixed = TRUE)
+  expect_equal(request$body$data$variables,
+               list(uid = "6889", ymd = "2026-10-20"))
+  expect_equal(request$headers$Authorization, "Bearer example-token")
+})
+
+test_that("single-day workout query validates session and date", {
+  expect_error(weightxreps_get_workout(list(token = "x"), "2026-10-20"),
+               "uid", fixed = TRUE)
+  expect_error(weightxreps_get_workout(list(token = "x", uid = 1), "2026-02-30"),
+               "date", fixed = TRUE)
+})
+
+test_that("single workout response is converted to nested tibbles", {
+  workout <- weightxreps_tibble_workout(list(
+    log = "Training",
+    bw = 80,
+    eblocks = list(list(eid = 17L, sets = list(list(w = 100, r = 5)))),
+    exercises = list(list(exercise = list(id = "17", name = "Squat", type = 1)))
+  ))
+
+  expect_s3_class(workout$eblocks, "tbl_df")
+  expect_s3_class(workout$eblocks$sets[[1]], "tbl_df")
+  expect_s3_class(workout$exercises, "tbl_df")
+  expect_s3_class(workout$exercises$exercise[[1]], "tbl_df")
+  expect_null(weightxreps_tibble_workout(NULL))
+})

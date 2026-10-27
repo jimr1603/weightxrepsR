@@ -50,5 +50,17 @@ weightxreps_download_logs(session$token, file = "training-logs.json")
 ```
 
 The result contains `did`, exercise statistics, exercise tags, user tags, and
-`baseBW`. The API returns the authenticated user's complete export; writing it
-to a file does not transform or filter the data.
+`baseBW` as a list. `did`, `exercises`, and `utags` are tibbles; exercise
+references and exercise-set unions remain nested tibble columns. Writing the
+result to JSON preserves the complete API export.
+
+## Get one workout
+
+```r
+workout <- weightxreps_get_workout(session, "2026-10-20")
+```
+
+Pass the session returned by `weightxreps_login()` and a `Date` or
+`YYYY-MM-DD` string. The result includes the workout log and bodyweight, with
+exercise blocks, sets, and exercise details as tibbles; it returns `NULL` when
+there is no workout on that date.

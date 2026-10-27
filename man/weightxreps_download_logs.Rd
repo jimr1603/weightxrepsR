@@ -18,7 +18,8 @@ weightxreps_download_logs(
 \item{file}{Optional path where the complete download should be written as JSON.}
 }
 \value{
-The `downloadLogs` data, invisibly if `file` is supplied.
+A list with `did`, `exercises`, and `utags` tibbles, plus `etags` and
+  `baseBW`, invisibly if `file` is supplied.
 }
 \description{
 Download all training logs for the authenticated user

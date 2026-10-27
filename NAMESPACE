@@ -1,3 +1,4 @@
 export(weightxreps_download_logs)
+export(weightxreps_get_workout)
 export(weightxreps_login)
 export(weightxreps_query)
